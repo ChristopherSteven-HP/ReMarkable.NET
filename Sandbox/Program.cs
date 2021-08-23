@@ -36,8 +36,8 @@ namespace Sandbox
 
             var screen = OutputDevices.Display;
 
-            // var w = new Window(screen.VisibleWidth, screen.VisibleHeight);
-            // w.Update += WindowUpdate;
+            var w = new Window(screen.VisibleWidth, screen.VisibleHeight);
+            w.Update += WindowUpdate;
             //
             // InputDevices.Digitizer.Pressed += (sender, code) => w.ConsumePress(InputDevices.Digitizer.State, code);
             // InputDevices.Digitizer.Released += (sender, code) => w.ConsumeRelease(InputDevices.Digitizer.State, code);
@@ -47,52 +47,52 @@ namespace Sandbox
             // InputDevices.Touchscreen.Released += (sender, finger) => w.ConsumeRelease(finger);
             // InputDevices.Touchscreen.Moved += (sender, finger) => w.ConsumeMove(finger);
             //
-            // var mainPage = w.CreatePage<MainPage>();
+            var mainPage = w.CreatePage<MainPage>();
             //
             // logger.Info("Showing main page");
-            // w.ShowPage(mainPage);
+            w.ShowPage(mainPage);
 
-            var center = new PointF(screen.VisibleWidth / 2f, screen.VisibleHeight / 2f);
-            var margin = 50;
+            //var center = new PointF(screen.VisibleWidth / 2f, screen.VisibleHeight / 2f);
+            //var margin = 50;
 
-            _referencePoints = new[]
-            {
-                new PointF(margin, margin), new PointF(center.X, margin), new PointF(screen.VisibleWidth - margin, margin),
-                new PointF(margin, center.Y), new PointF(center.X, center.Y), new PointF(screen.VisibleWidth - margin, center.Y),
-                new PointF(margin, screen.VisibleHeight - margin), new PointF(center.X, screen.VisibleHeight - margin), new PointF(screen.VisibleWidth - margin, screen.VisibleHeight - margin),
-            };
+            //_referencePoints = new[]
+            //{
+            //    new PointF(margin, margin), new PointF(center.X, margin), new PointF(screen.VisibleWidth - margin, margin),
+            //    new PointF(margin, center.Y), new PointF(center.X, center.Y), new PointF(screen.VisibleWidth - margin, center.Y),
+            //    new PointF(margin, screen.VisibleHeight - margin), new PointF(center.X, screen.VisibleHeight - margin), new PointF(screen.VisibleWidth - margin, screen.VisibleHeight - margin),
+            //};
 
-            _frame = new Image<Rgb24>(screen.VisibleWidth, screen.VisibleHeight);
-            _frame.Mutate(context => context
-                .SetGraphicsOptions(options => options.Antialias = false)
-                .Clear(Color.White)
-            // .DrawPolygon(Color.Black, 1, Square(5, center, 45))
-            // .DrawPolygon(Color.Black, 1, Square(1, center))
-            );
-            OutputDevices.Display.Draw(_frame, _frame.Bounds(), Point.Empty, waveformMode: WaveformMode.Auto);
+            //_frame = new Image<Rgb24>(screen.VisibleWidth, screen.VisibleHeight);
+            //_frame.Mutate(context => context
+            //    .SetGraphicsOptions(options => options.Antialias = false)
+            //    .Clear(Color.White)
+            //// .DrawPolygon(Color.Black, 1, Square(5, center, 45))
+            //// .DrawPolygon(Color.Black, 1, Square(1, center))
+            //);
+            //OutputDevices.Display.Draw(_frame, _frame.Bounds(), Point.Empty, waveformMode: WaveformMode.Auto);
 
-            // InputDevices.Digitizer.Calibrator.Calibration = BuiltinStylusCalibrations.FujitsuLifebookStylus;
+            //// InputDevices.Digitizer.Calibrator.Calibration = BuiltinStylusCalibrations.FujitsuLifebookStylus;
 
-            StylusState prevState = null;
-            var time = DateTime.Now;
-            InputDevices.Digitizer.StylusUpdate += (sender, state) =>
-            {
-                if (prevState == null)
-                {
-                    prevState = state;
-                    return;
-                }
+            //StylusState prevState = null;
+            //var time = DateTime.Now;
+            //InputDevices.Digitizer.StylusUpdate += (sender, state) =>
+            //{
+            //    if (prevState == null)
+            //    {
+            //        prevState = state;
+            //        return;
+            //    }
 
-                if (((prevState.Pressure < 10 && state.Pressure >= 10) || _currentPointIdx == -1) && time <= DateTime.Now)
-                {
-                    StylusPress(state);
-                    time = DateTime.Now + TimeSpan.FromMilliseconds(50);
-                }
+            //    if (((prevState.Pressure < 10 && state.Pressure >= 10) || _currentPointIdx == -1) && time <= DateTime.Now)
+            //    {
+            //        StylusPress(state);
+            //        time = DateTime.Now + TimeSpan.FromMilliseconds(50);
+            //    }
 
-                prevState = state;
-            };
+            //    prevState = state;
+            //};
 
-            OutputDevices.Display.Draw(_frame.Clone(DrawCalibrationMarker), _frame.Bounds(), Point.Empty, waveformMode: WaveformMode.Auto);
+            //OutputDevices.Display.Draw(_frame.Clone(DrawCalibrationMarker), _frame.Bounds(), Point.Empty, waveformMode: WaveformMode.Auto);
 
             threadLock.Wait();
         }
